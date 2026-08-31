@@ -362,20 +362,23 @@ function arcPath(primitive: Extract<SigilPrimitive, { kind: 'arc' }>): string {
 
 function primitiveMarkup(primitive: SigilPrimitive): string {
   const o = f(primitive.opacity)
+  // The layer travels into the markup so the completion animation can settle
+  // the sigil outward-in without the view needing to know its structure.
+  const l = ` style="--layer:${primitive.layer}"`
   switch (primitive.kind) {
     case 'ring':
-      return `<circle cx="${f(primitive.cx)}" cy="${f(primitive.cy)}" r="${f(primitive.r)}" stroke-width="${f(primitive.width)}" opacity="${o}"${primitive.dash ? ` stroke-dasharray="${primitive.dash}"` : ''}/>`
+      return `<circle cx="${f(primitive.cx)}" cy="${f(primitive.cy)}" r="${f(primitive.r)}" stroke-width="${f(primitive.width)}" opacity="${o}"${primitive.dash ? ` stroke-dasharray="${primitive.dash}"` : ''}${l}/>`
     case 'arc':
-      return `<path d="${arcPath(primitive)}" stroke-width="${f(primitive.width)}" opacity="${o}"/>`
+      return `<path d="${arcPath(primitive)}" stroke-width="${f(primitive.width)}" opacity="${o}"${l}/>`
     case 'line':
-      return `<line x1="${f(primitive.x1)}" y1="${f(primitive.y1)}" x2="${f(primitive.x2)}" y2="${f(primitive.y2)}" stroke-width="${f(primitive.width)}" opacity="${o}"/>`
+      return `<line x1="${f(primitive.x1)}" y1="${f(primitive.y1)}" x2="${f(primitive.x2)}" y2="${f(primitive.y2)}" stroke-width="${f(primitive.width)}" opacity="${o}"${l}/>`
     case 'node':
-      return `<circle cx="${f(primitive.cx)}" cy="${f(primitive.cy)}" r="${f(primitive.r)}" opacity="${o}"${primitive.filled ? ' fill="currentColor" stroke="none"' : ' stroke-width="0.9"'}/>`
+      return `<circle cx="${f(primitive.cx)}" cy="${f(primitive.cy)}" r="${f(primitive.r)}" opacity="${o}"${primitive.filled ? ' fill="currentColor" stroke="none"' : ' stroke-width="0.9"'}${l}/>`
     case 'path': {
       const d = primitive.points
         .map(([x, y], index) => `${index === 0 ? 'M' : 'L'} ${f(x)} ${f(y)}`)
         .join(' ')
-      return `<path d="${d}${primitive.closed ? ' Z' : ''}" stroke-width="${f(primitive.width)}" opacity="${o}"/>`
+      return `<path d="${d}${primitive.closed ? ' Z' : ''}" stroke-width="${f(primitive.width)}" opacity="${o}"${l}/>`
     }
   }
 }

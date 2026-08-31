@@ -1,5 +1,8 @@
 import { defineConfig } from 'vite'
 
+// Declared locally rather than pulling in @types/node for one lookup.
+declare const process: { env: Record<string, string | undefined> }
+
 /**
  * ARCANUM builds with a relative base by default (`./`).
  *
