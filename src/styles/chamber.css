@@ -33,10 +33,25 @@
 }
 
 .dial__frame,
-.dial__core,
-.dial__ring {
+.dial__core {
   position: absolute;
   inset: 0;
+}
+
+/**
+ * The bezel is a point at the centre of the dial rather than a full-size
+ * square. Rotating a square would give it a bounding box up to 1.41x the
+ * dial, which pushes past the viewport on a 320px screen even though nothing
+ * is ever drawn out there.
+ */
+.dial__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  transform: rotate(var(--rotation, 0deg));
+  will-change: transform;
 }
 
 .dial__frame svg,
@@ -84,15 +99,10 @@
   box-shadow: var(--glow-tight);
 }
 
-.dial__ring {
-  transform: rotate(var(--rotation, 0deg));
-  will-change: transform;
-}
-
 .dial__node {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 0;
+  left: 0;
   width: 46px;
   height: 46px;
   margin: -23px 0 0 -23px;
@@ -207,6 +217,7 @@
 .geo__fragment {
   transform-box: view-box;
   transform-origin: 50% 50%;
+  transform: rotate(var(--fragment-angle, 0deg));
 }
 
 .geo__fragment-line {
@@ -342,7 +353,7 @@
 [data-intent='resolve'] .geo__fragment {
   /* Every fragment turns toward vertical, and the alignment tightens as
      resonance grows through the ritual. */
-  transform: rotate(calc((var(--i) * 45deg) * (1 - var(--resonance) * 0.72)));
+  transform: rotate(calc(var(--fragment-angle, 0deg) * (1 - var(--resonance) * 0.72)));
   transition: transform var(--duration-ritual) var(--ease-ritual);
 }
 

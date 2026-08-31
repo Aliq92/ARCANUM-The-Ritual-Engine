@@ -42,7 +42,7 @@ function makeSprite(color: string): HTMLCanvasElement {
   if (ctx) {
     const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2)
     gradient.addColorStop(0, color)
-    gradient.addColorStop(0.45, color.replace(')', ' / 0.35)').replace('hsl(', 'hsl('))
+    gradient.addColorStop(0.45, color.replace(')', ' / 0.35)'))
     gradient.addColorStop(1, 'transparent')
     ctx.fillStyle = gradient
     ctx.fillRect(0, 0, size, size)

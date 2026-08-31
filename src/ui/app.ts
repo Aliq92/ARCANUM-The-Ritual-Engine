@@ -97,16 +97,19 @@ export class ArcanumApp {
   updateSettings(patch: Partial<Settings>): void {
     this.#settings = { ...this.#settings, ...patch }
     saveSettings(this.#settings)
-    this.#applySettings()
+    // Reached from a control the user just pressed, so audio may start here.
+    this.#applySettings({ fromGesture: true })
   }
 
-  #applySettings(): void {
+  #applySettings(options: { fromGesture?: boolean } = {}): void {
     const reduced = this.reducedMotion()
     document.documentElement.dataset.motion = reduced ? 'reduced' : 'full'
     this.#field.setReducedMotion(reduced)
     this.audio.setSoundEnabled(this.#settings.sound)
     this.audio.setHapticsEnabled(this.#settings.haptics)
-    if (this.#settings.sound) void this.#wakeAudio()
+    // No AudioContext is constructed on load: it is created by the first
+    // genuine interaction, which is what autoplay policy actually requires.
+    if (options.fromGesture && this.#settings.sound) void this.#wakeAudio()
   }
 
   /** Audio may only be created inside a gesture; every entry point tries. */

@@ -139,12 +139,25 @@ export function createRitualView(handlers: RitualViewHandlers): RitualView {
 
   const runOpening = () => {
     const phrase = h('p', { class: 'rite__opening' }, [session.ritual.opening])
-    const panel = h('div', { class: 'rite__panel rite__panel--opening' }, [
-      phrase,
-      h('p', { class: 'rite__nudge' }, ['Touch to continue']),
-    ])
-    // The opening is the one stage a person may move through at their own pace.
+    const panel = h(
+      'div',
+      {
+        class: 'rite__panel rite__panel--opening',
+        role: 'button',
+        tabindex: '0',
+        'aria-label': `${session.ritual.opening} Continue to the breath.`,
+      },
+      [phrase, h('p', { class: 'rite__nudge' }, ['Touch to continue'])],
+    )
+    // The opening is the one stage a person may move through at their own
+    // pace, by pointer or by key. Everything after it is timed.
     panel.addEventListener('click', () => handlers.advance('BREATH'))
+    panel.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        handlers.advance('BREATH')
+      }
+    })
     setContent(panel)
     handlers.announce(session.ritual.opening)
     runProgress(plan.openingSeconds)

@@ -20,10 +20,13 @@ if (
 ) {
   const app = new ArcanumApp({ stage, nav, live, canvas })
 
-  // The first gesture anywhere is what permits audio to exist at all.
+  // The first gesture anywhere is what permits audio to exist at all. Both
+  // listeners are removed together, whichever one fires first.
   const unlock = () => {
+    document.removeEventListener('pointerdown', unlock)
+    document.removeEventListener('keydown', unlock)
     if (app.settings.sound) void app.audio.awaken()
   }
-  document.addEventListener('pointerdown', unlock, { once: true, passive: true })
-  document.addEventListener('keydown', unlock, { once: true })
+  document.addEventListener('pointerdown', unlock, { passive: true })
+  document.addEventListener('keydown', unlock)
 }

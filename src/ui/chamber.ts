@@ -1,4 +1,4 @@
-import { INTENT_ORDER, intentProfile } from '../rituals/intents'
+import { intentProfile } from '../rituals/intents'
 import type { RitualIntent } from '../rituals/types'
 import { createIntentDial, type IntentDial } from '../visuals/intentDial'
 import { h, type View } from './dom'
@@ -60,13 +60,6 @@ export function createChamberView(handlers: ChamberHandlers): View {
 
   return {
     element,
-    enter() {
-      // Announce the dial's contents once, for anyone not seeing it.
-      element.setAttribute(
-        'aria-description',
-        `Six intents: ${INTENT_ORDER.map((intent) => intentProfile(intent).label).join(', ')}.`,
-      )
-    },
     destroy() {
       dial?.destroy()
       dial = null

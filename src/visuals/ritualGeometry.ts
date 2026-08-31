@@ -55,11 +55,19 @@ export function createRitualGeometry(): SVGSVGElement {
     spokes.append(spoke)
   }
 
-  // Loose fragments. Each intent moves these differently.
+  /**
+   * Loose fragments. Each intent moves these differently.
+   *
+   * Their rotation is set in CSS from `--i` rather than with an SVG transform
+   * attribute: the two do not agree once `transform-box` is involved, and the
+   * attribute version escapes the viewBox entirely on narrow screens.
+   */
   const fragments = group('geo__fragments')
   for (let i = 0; i < FRAGMENT_COUNT; i++) {
-    const holder = el('g', { class: 'geo__fragment', style: `--i:${i}` })
-    holder.setAttribute('transform', `rotate(${(i * 360) / FRAGMENT_COUNT} 100 100)`)
+    const holder = el('g', {
+      class: 'geo__fragment',
+      style: `--i:${i};--fragment-angle:${(i * 360) / FRAGMENT_COUNT}deg`,
+    })
     holder.append(el('line', { class: 'geo__fragment-line', x1: 100, y1: 58, x2: 100, y2: 44 }))
     fragments.append(holder)
   }

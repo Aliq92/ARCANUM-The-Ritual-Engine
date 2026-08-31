@@ -66,6 +66,15 @@ describe('RitualStateMachine', () => {
     }
   })
 
+  it('keeps navigation live during the intensity choice', () => {
+    for (const destination of ['ARCHIVE', 'SETTINGS'] as const) {
+      const machine = new RitualStateMachine()
+      machine.transition('INTENSITY_SELECT')
+      expect(machine.transition(destination)).toBe(true)
+      expect(machine.state).toBe(destination)
+    }
+  })
+
   it('reaches archive and settings only from outside a ritual', () => {
     const machine = new RitualStateMachine()
     expect(machine.transition('ARCHIVE')).toBe(true)

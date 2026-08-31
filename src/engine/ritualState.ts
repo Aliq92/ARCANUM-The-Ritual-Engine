@@ -44,12 +44,13 @@ export function isActiveRitualState(state: RitualState): state is RitualStage {
 
 /**
  * Legal moves. CHAMBER is reachable from everywhere, so a ritual can always
- * be abandoned; ARCHIVE and SETTINGS are reachable only from outside a
- * running ritual.
+ * be abandoned. ARCHIVE and SETTINGS are reachable from anywhere a ritual is
+ * not yet running — including the intensity choice, where the navigation is
+ * still on screen and must not be inert.
  */
 const TRANSITIONS: Record<RitualState, readonly RitualState[]> = {
   CHAMBER: ['INTENSITY_SELECT', 'ARCHIVE', 'SETTINGS'],
-  INTENSITY_SELECT: ['OPENING', 'CHAMBER'],
+  INTENSITY_SELECT: ['OPENING', 'CHAMBER', 'ARCHIVE', 'SETTINGS'],
   OPENING: ['BREATH', 'CHAMBER'],
   BREATH: ['INVOCATION', 'CHAMBER'],
   INVOCATION: ['SILENCE', 'CHAMBER'],

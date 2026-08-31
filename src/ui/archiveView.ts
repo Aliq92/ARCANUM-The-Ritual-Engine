@@ -42,15 +42,27 @@ export function createArchiveView(handlers: { onOpenChamber(): void }): View {
     return { element }
   }
 
-  const detail = h('div', { class: 'archive__detail', hidden: true, role: 'dialog', 'aria-modal': 'false' })
+  const detail = h('div', {
+    class: 'archive__detail',
+    hidden: true,
+    role: 'dialog',
+    'aria-modal': 'true',
+    'aria-label': 'Completed ritual',
+  })
+
+  let lastTrigger: HTMLElement | null = null
 
   const closeDetail = () => {
     detail.hidden = true
     detail.replaceChildren()
     grid.removeAttribute('inert')
+    // Send focus back where it came from rather than to the top of the page.
+    lastTrigger?.focus()
+    lastTrigger = null
   }
 
-  const openDetail = (entry: ArchiveEntry) => {
+  const openDetail = (entry: ArchiveEntry, trigger: HTMLElement) => {
+    lastTrigger = trigger
     const profile = intentProfile(entry.intent)
     const back = h('button', { class: 'rite-button rite-button--quiet', type: 'button' }, ['Close'])
     back.addEventListener('click', closeDetail)
@@ -103,7 +115,7 @@ export function createArchiveView(handlers: { onOpenChamber(): void }): View {
           h('span', { class: 'archive__card-date' }, [formatArchiveDate(entry.completedAt).split(',')[0]]),
         ],
       )
-      button.addEventListener('click', () => openDetail(entry))
+      button.addEventListener('click', () => openDetail(entry, button))
       return h('li', {}, [button])
     }),
   )
