@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # Runs the same typecheck, tests and build on every pull request, so a PR
+  # has real checks to pass before it is merged. Pull requests stop after the
+  # build job; only main deploys.
+  pull_request:
+    branches: [main]
   # Lets a maintainer redeploy the current main without a new commit.
   workflow_dispatch:
 
@@ -10,8 +15,9 @@ on:
 permissions:
   contents: read
 
+# Keyed by ref so a pull request run can never cancel a deployment of main.
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
@@ -50,6 +56,8 @@ jobs:
   deploy:
     name: Deploy
     needs: build
+    # A pull request proves the build; it must never publish it.
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pages: write
