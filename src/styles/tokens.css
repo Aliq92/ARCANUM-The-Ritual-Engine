@@ -1,0 +1,84 @@
+/**
+ * ARCANUM design tokens.
+ *
+ * The palette is near-black with a single luminous accent. That accent is
+ * expressed as separate hue/saturation/lightness channels so an intent can
+ * re-tint the entire instrument by setting three numbers — no per-intent
+ * colour rules anywhere else in the stylesheet.
+ */
+
+:root {
+  /* Surfaces: layered black glass, each step barely above the last. */
+  --bg-deep: #050609;
+  --bg-surface: #080a0e;
+  --bg-raised: #0c0f14;
+  --bg-glass: rgba(255, 255, 255, 0.028);
+  --bg-glass-strong: rgba(255, 255, 255, 0.055);
+
+  /* Hairlines. Nothing in this interface is thicker than it needs to be. */
+  --line: rgba(255, 255, 255, 0.09);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --line-faint: rgba(255, 255, 255, 0.045);
+
+  --text-primary: #e9ebee;
+  --text-secondary: #a9aeb6;
+  --text-muted: #7b818a;
+  --text-faint: #4e535b;
+
+  /* The accent. Overwritten per intent on the root element. */
+  --accent-h: 205;
+  --accent-s: 34%;
+  --accent-l: 66%;
+  --accent: hsl(var(--accent-h) var(--accent-s) var(--accent-l));
+  --accent-dim: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.55);
+  --accent-soft: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.16);
+  --accent-faint: hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.07);
+  --glow: 0 0 28px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.22);
+  --glow-tight: 0 0 12px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.3);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 999px;
+
+  /* Motion. Ritual timing is slow and never bouncy. */
+  --ease-ritual: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-breath: cubic-bezier(0.42, 0, 0.58, 1);
+  --duration-fast: 180ms;
+  --duration-base: 420ms;
+  --duration-slow: 900ms;
+  --duration-ritual: 1600ms;
+
+  --font-label: ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --font-voice: ui-serif, Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --font-mono: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, monospace;
+
+  --tracking-wide: 0.22em;
+  --tracking-label: 0.34em;
+
+  /* Set by the app so views can size against the real viewport. */
+  --dial-size: clamp(228px, 74vw, 360px);
+
+  /* Driven by the breath stage. 1 is rest. */
+  --breath-scale: 1;
+  --breath-glow: 0.3;
+  /* 0 to 1 as the ritual's stages complete. */
+  --resonance: 0;
+}
+
+/* Reduced motion, whether from the OS or from Settings. */
+:root[data-motion='reduced'] {
+  --duration-base: 1ms;
+  --duration-slow: 1ms;
+  --duration-ritual: 1ms;
+}

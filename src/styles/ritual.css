@@ -1,0 +1,343 @@
+/* ------------------------------------------------------------------ */
+/* The active ritual                                                   */
+/* ------------------------------------------------------------------ */
+
+.rite {
+  gap: var(--space-6);
+  justify-content: center;
+  min-height: 0;
+}
+
+.rite__core {
+  position: relative;
+  width: var(--dial-size);
+  height: var(--dial-size);
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+}
+
+.rite__geometry,
+.rite__sigil,
+.rite__progress {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.rite__geometry {
+  display: grid;
+  place-items: center;
+  /* Less inset than the chamber: here the progress ring is the frame, and
+     the geometry should meet it rather than sit lost inside it. */
+  padding: 3%;
+  transition: opacity var(--duration-ritual) var(--ease-ritual),
+    transform var(--duration-ritual) var(--ease-ritual);
+}
+
+/* At completion the live geometry gives way to the finished mark. */
+.rite__geometry[data-state='retired'] {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.rite__progress {
+  overflow: visible;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+
+.rite__progress-track,
+.rite__progress-graduations {
+  fill: none;
+  stroke: var(--line-faint);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+
+.rite__progress-track {
+  stroke: var(--line);
+}
+
+.rite__progress-graduations {
+  stroke-width: 3;
+  stroke-dasharray: 0.6 8.6;
+  stroke-linecap: round;
+}
+
+.rite__progress-value {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-linecap: round;
+  opacity: 0.42;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: var(--circumference);
+  stroke-dashoffset: calc(var(--circumference) * (1 - var(--progress, 0)));
+}
+
+/* ------------------------------------------------------------------ */
+/* Stage panels                                                        */
+/* ------------------------------------------------------------------ */
+
+.rite__content {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 132px;
+}
+
+.rite__panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  width: 100%;
+  text-align: center;
+  animation: panel-enter var(--duration-slow) var(--ease-ritual) both;
+}
+
+@keyframes panel-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.rite__panel--opening {
+  cursor: pointer;
+  gap: var(--space-5);
+}
+
+.rite__opening,
+.rite__line {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-voice);
+  font-size: clamp(19px, 5.6vw, 25px);
+  line-height: 1.45;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.rite__line {
+  transition: opacity var(--duration-base) var(--ease-ritual),
+    transform var(--duration-base) var(--ease-ritual);
+}
+
+.rite__line[data-state='leaving'] {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+.rite__line[data-state='present'] {
+  opacity: 1;
+  transform: none;
+}
+
+.rite__nudge {
+  margin: 0;
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--text-faint);
+  animation: nudge-breathe 4.5s var(--ease-inout) infinite;
+}
+
+@keyframes nudge-breathe {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+.rite__phase {
+  margin: 0;
+  font-size: clamp(15px, 4.4vw, 18px);
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
+  color: var(--text-primary);
+  transition: opacity var(--duration-base) var(--ease-ritual);
+}
+
+.rite__count {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--text-faint);
+}
+
+.rite__action {
+  margin: 0;
+  max-width: 24ch;
+  font-family: var(--font-voice);
+  font-size: clamp(19px, 5.4vw, 24px);
+  line-height: 1.4;
+  color: var(--text-primary);
+  text-wrap: balance;
+}
+
+.rite__closing {
+  margin: 0;
+  max-width: 26ch;
+  font-family: var(--font-voice);
+  font-size: 16px;
+  line-height: 1.5;
+  color: var(--text-secondary);
+}
+
+.rite__panel-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+}
+
+/* ------------------------------------------------------------------ */
+/* Silence                                                             */
+/* ------------------------------------------------------------------ */
+
+/* Nothing but geometry. The shift should be felt, not read. */
+.rite[data-stage='silence'] .rite__content {
+  min-height: 132px;
+}
+
+.rite[data-stage='silence'] .rite__resonance,
+.rite[data-stage='silence'] .rite__end {
+  opacity: 0.18;
+}
+
+.rite[data-stage='silence'] .rite__progress-value {
+  opacity: 0.22;
+}
+
+/* ------------------------------------------------------------------ */
+/* Resonance                                                           */
+/* ------------------------------------------------------------------ */
+
+.rite__resonance {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: opacity var(--duration-slow) var(--ease-ritual);
+}
+
+.rite__mark {
+  width: 16px;
+  height: 1px;
+  background: var(--line);
+  transition: background var(--duration-slow) var(--ease-ritual),
+    box-shadow var(--duration-slow) var(--ease-ritual), transform var(--duration-slow) var(--ease-ritual);
+}
+
+.rite__mark[data-lit='true'] {
+  background: var(--accent);
+  box-shadow: var(--glow-tight);
+  transform: scaleY(2);
+}
+
+.rite__end {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--text-faint);
+  font-family: inherit;
+  font-size: 9px;
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  padding: var(--space-3) var(--space-5);
+  min-height: 44px;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity var(--duration-base) var(--ease-ritual), color var(--duration-base) var(--ease-ritual);
+}
+
+.rite__end:hover {
+  opacity: 1;
+  color: var(--text-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* The completed sigil                                                 */
+/* ------------------------------------------------------------------ */
+
+.rite__sigil {
+  display: grid;
+  place-items: center;
+  padding: 4%;
+  color: var(--accent);
+  pointer-events: none;
+}
+
+.rite__sigil svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 0 12px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.22));
+}
+
+/* Scattered geometry pulls inward, aligns, and locks — outermost layer first. */
+/**
+ * `backwards` rather than `both`: the from-state holds during the delay, and
+ * once the animation ends the element returns to its own styling — which
+ * matters because each primitive carries its own opacity attribute, and a
+ * `to` keyframe would flatten every one of them to the same value.
+ */
+.rite__sigil--assembling svg [style*='--layer'] {
+  animation: sigil-settle 1100ms var(--ease-ritual) backwards;
+  animation-delay: calc(var(--layer) * 190ms);
+  transform-box: view-box;
+  transform-origin: 50% 50%;
+}
+
+.rite__sigil--assembling svg {
+  animation: sigil-lock 900ms var(--ease-ritual) 1100ms both;
+}
+
+@keyframes sigil-settle {
+  from {
+    opacity: 0;
+    transform: rotate(calc((var(--layer) + 1) * 9deg)) scale(1.28);
+  }
+}
+
+@keyframes sigil-lock {
+  0% {
+    filter: drop-shadow(0 0 0 transparent);
+  }
+  45% {
+    filter: drop-shadow(0 0 26px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.5));
+  }
+  100% {
+    filter: drop-shadow(0 0 12px hsl(var(--accent-h) var(--accent-s) var(--accent-l) / 0.22));
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion                                                      */
+/* ------------------------------------------------------------------ */
+
+/**
+ * The breath survives reduced motion, because it is the instruction rather
+ * than decoration — but it becomes a change of light with only a hint of
+ * scale behind it. The scale is damped here rather than at the source: the
+ * ritual view writes --breath-scale inline, which no rule could override.
+ */
+:root[data-motion='reduced'] .geo__halo,
+:root[data-motion='reduced'] .geo__aura,
+:root[data-motion='reduced'] .geo__core {
+  transform: scale(calc(1 + (var(--breath-scale) - 1) * 0.28));
+}
+
+:root[data-motion='reduced'] .rite__nudge {
+  animation: none;
+  opacity: 0.6;
+}
